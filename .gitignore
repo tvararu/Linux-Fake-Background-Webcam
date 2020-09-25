@@ -1,3 +1,4 @@
 bodypix/node_modules/
 bodypix/package-lock.json
+fakecam/__pycache__
 docker-compose*.yml
