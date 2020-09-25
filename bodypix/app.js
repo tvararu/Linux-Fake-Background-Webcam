@@ -1,8 +1,8 @@
-const PORT = process.env.PORT || 9000;
-const tf = tensorflow();
-
 const bodyPix = require("@tensorflow-models/body-pix");
+const tf = require("@tensorflow/tfjs-node");
 const http = require("http");
+const PORT = process.env.PORT || 9000;
+
 (async () => {
   const net = await bodyPix.load({
     architecture: "MobileNetV1",
@@ -10,6 +10,7 @@ const http = require("http");
     multiplier: 0.75,
     quantBytes: 2,
   });
+
   const server = http.createServer();
   server.on("request", async (req, res) => {
     var chunks = [];
@@ -30,16 +31,5 @@ const http = require("http");
     });
   });
   server.listen(PORT);
+  console.log("Listening on http://localhost:%s", PORT);
 })();
-
-function tensorflow() {
-  const GPU = process.env.GPU || "/dev/nvidia0";
-  const fs = require("fs");
-  if (fs.existsSync(GPU)) {
-    console.log("Found a GPU at %s", GPU);
-    return require("@tensorflow/tfjs-node-gpu");
-  } else {
-    console.log("No GPU found at %s, using CPU", GPU);
-    return require("@tensorflow/tfjs-node");
-  }
-}
